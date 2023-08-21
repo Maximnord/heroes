@@ -18,14 +18,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/trainers/register', 'TrainerController@register');
-Route::put('/trainers/{trainer}', 'TrainerController@update');
-Route::get('/trainers/{trainer}', 'TrainerController@show');
-Route::delete('/trainers/{trainer}', 'TrainerController@destroy');
+Route::group(['middleware' => ['jwt.auth']], function () {
+    // Protected routes here:
+    Route::post('/login', 'AuthController@login');
 
-Route::post('/heroes', 'HeroController@create');
-Route::put('/heroes/{hero}', 'HeroController@assignToTrainer');
-Route::put('/heroes/{hero}', 'HeroController@update');
-Route::get('/heroes/{hero}', 'HeroController@show');
-Route::get('/trainers/{trainer}/heroes', 'HeroController@getAllByTrainer');
-Route::delete('/heroes/{hero}', 'HeroController@unassignFromTrainer');
+    Route::post('/trainers/register', 'TrainerController@register');
+    Route::put('/trainers/{trainer}', 'TrainerController@update');
+    Route::get('/trainers/{trainer}', 'TrainerController@show');
+    Route::delete('/trainers/{trainer}', 'TrainerController@destroy');
+
+    Route::post('/heroes', 'HeroController@create');
+    Route::put('/heroes/{hero}', 'HeroController@assignToTrainer');
+    Route::put('/heroes/{hero}', 'HeroController@update');
+    Route::get('/heroes/{hero}', 'HeroController@show');
+    Route::get('/trainers/{trainer}/heroes', 'HeroController@getAllByTrainer');
+    Route::delete('/heroes/{hero}', 'HeroController@unassignFromTrainer');
+
+});
